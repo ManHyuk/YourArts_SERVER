@@ -9,7 +9,7 @@ const config = require('../config/config');
 
 /*******************
  *  Register
- *  @param: user_data = {user_id, user_password, user_nickname}
+ *  @param: userData = {user_id, user_pw, user_nickname}
  ********************/
 exports.register = (userData) => {
   return new Promise((resolve, reject) => {
@@ -86,7 +86,7 @@ exports.check = (userData) => {
 
 /*******************
  *  Login
- *  @param: user_data = {user_id, user_password}
+ *  @param: userData = {user_id, user_pw}
  ********************/
 exports.login = (userData) => {
   return new Promise((resolve, reject) => {
