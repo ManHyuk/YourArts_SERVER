@@ -44,7 +44,11 @@ exports.register = async(req, res, next) => {
   ///qqq
 
   // success
-  return res.status(201).json(result[0]);
+  return res.status(201).json({
+    "status": true,
+    "message": "success",
+    "result" : result[0]
+  });
 
 
 };
@@ -94,7 +98,12 @@ exports.login = async(req, res, next) => {
   }
 
   // success
-  return res.json(result);
+  // return res.json({
+  //   "status": true,
+  //   "message": "success",
+  //   "result": result
+  // });
+  return res.r(result);
 };
 
 

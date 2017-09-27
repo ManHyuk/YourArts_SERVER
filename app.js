@@ -22,6 +22,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cors());
 
+app.use((req, res, next) => {
+  res.r = (result) => {
+    res.json({
+      status: true,
+      message: "success",
+      result,
+    });
+  };
+  next();
+});
+
 require('./routes')(app);
 
 // error handler
