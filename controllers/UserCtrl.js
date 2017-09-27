@@ -40,7 +40,7 @@ exports.register = async(req, res, next) => {
     console.log(error);
     return next(error)
   }
-
+  //jjj
   // success
   return res.status(201).json(result[0]);
 
@@ -109,5 +109,3 @@ exports.profile = async(req, res, next) => {
   }
   return res.json(result);
 };
-
-
