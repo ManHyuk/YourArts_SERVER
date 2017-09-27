@@ -42,6 +42,7 @@ exports.register = async(req, res, next) => {
   }
   //jjj
   ///qqq
+
   // success
   return res.status(201).json(result[0]);
 
