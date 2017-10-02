@@ -2,6 +2,7 @@
 
 const authCtrl = require('../controllers/AuthCtrl');
 const userCtrl = require('../controllers/UserCtrl');
+const artsCtrl = require('../controllers/ArtsCtrl');
 const collectionCtrl = require('../controllers/CollectionCtrl');
 
 const aws = require('aws-sdk');
@@ -19,31 +20,43 @@ const upload = multer({
   })
 });
 
+
+
 module.exports = (router) => {
 
+  // USER
   router.route('/users/register')
     .post(userCtrl.register);
 
   router.route('/users/login')
-    .post(userCtrl.login);
+   .post(userCtrl.login);
 
 
-    //user의 콜랙션조회
-    router.route('/collections/:user_idx')
+
+  // ARTS
+
+  router.route('/arts/doing')
+    .get(artsCtrl.doingList);
+  router.route('/arts/done')
+    .get(artsCtrl.doneList);
+  router.route('/arts/todo')
+    .get(artsCtrl.todoList);
+  router.route('/search/:search')
+    .get(artsCtrl.search);
+
+
+// COLLECTIONS
+  router.route('/collections/:user_idx')
     .get(collectionCtrl.userCollection);
+  router.route('/collections/work')
+    .post(upload.single('collection_image'), collectionCtrl.workPost);
+  router.route('/collections/picture')
+    .post(upload.single('collection_image'), collectionCtrl.picturePost);
 
-    //컬렉션작성(미리보기)
-    router.route('/collections/work')
-      .post(upload.single('collection_image'), collectionCtrl.workPost);
-    //컬렉션작성(내가찍은사진)
-    router.route('/collections/picture')
-      .post(upload.single('collection_image'), collectionCtrl.picturePost);
-
-    //컬렉션상세조회, 컬렉션수정, 콜랙션삭제
-    router.route('/collections/:collection_idx')
-      .get(collectionCtrl.detailCollection)
-      .put(collectionCtrl.editCollection)
-      .delete(collectionCtrl.delCollection);
+  router.route('/collections/:collection_idx')
+    .get(collectionCtrl.detailCollection)
+    .put(collectionCtrl.editCollection)
+    .delete(collectionCtrl.delCollection);
 
 
   return router;
