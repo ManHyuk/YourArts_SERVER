@@ -4,23 +4,7 @@ const authCtrl = require('../controllers/AuthCtrl');
 const userCtrl = require('../controllers/UserCtrl');
 const artsCtrl = require('../controllers/ArtsCtrl');
 const collectionCtrl = require('../controllers/CollectionCtrl');
-
-const aws = require('aws-sdk');
-const s3 = new aws.S3();
-const multer = require('multer');
-const multerS3 = require('multer-s3');
-const upload = multer({
-  storage: multerS3({
-    s3: s3,
-    bucket: 'yourarts-img',
-    acl: 'public-read', //이미지 읽기만 허용
-    key: function(req, file, cb){
-      cb(null, Date.now() + '.' + file.originalname.split('.').pop());
-    }
-  })
-});
-
-
+const imageCtrl = require('../controllers/ImageCtrl');
 
 module.exports = (router) => {
 
@@ -34,7 +18,6 @@ module.exports = (router) => {
 
 
   // ARTS
-
   router.route('/arts/doing')
     .get(artsCtrl.doingList);
   router.route('/arts/done')
@@ -46,17 +29,19 @@ module.exports = (router) => {
 
 
 // COLLECTIONS
-  router.route('/collections/:user_idx')
+  router.route('/userCollections/:user_idx')
     .get(collectionCtrl.userCollection);
   router.route('/collections/work')
-    .post(upload.single('collection_image'), collectionCtrl.workPost);
+    .post(imageCtrl.uploadSingle, collectionCtrl.workPost);
   router.route('/collections/picture')
-    .post(upload.single('collection_image'), collectionCtrl.picturePost);
+    .post(imageCtrl.uploadSingle, collectionCtrl.picturePost);
 
   router.route('/collections/:collection_idx')
     .get(collectionCtrl.detailCollection)
-    .put(collectionCtrl.editCollection)
     .delete(collectionCtrl.delCollection);
+
+    router.route('/collections/edit')
+      .put(collectionCtrl.editCollection);
 
 
   return router;

@@ -5,20 +5,6 @@ const config = require('../config/config');
 const resMsg = require('../errors.json');
 const moment = require('moment');
 
-// const aws = require('aws-sdk');
-// const s3 = new aws.S3();
-// const multer = require('multer');
-// const multerS3 = require('multer-s3');
-// const upload = multer({
-//   storage: multerS3({
-//     s3: s3,
-//     bucket: 'yourarts-img',
-//     acl: 'public-read', //이미지 읽기만 허용
-//     key: function(req, file, cb){
-//       cb(null, Date.now() + '.' + file.originalname.split('.').pop());
-//     }
-//   })
-// });
 
 //데이터받아서 쿼리문 실행
 
@@ -28,9 +14,9 @@ const moment = require('moment');
 exports.userCollection = async(req, res, next) => {
   let result = '';
   try {
-    const userData = req.params.user_idx;
+    const userIdxData = req.params.user_idx;
 
-    result = await collectionModel.userCollection(userData);
+    result = await collectionModel.userCollection(userIdxData);
 
   } catch (error) {
     console.log(error);
@@ -43,50 +29,50 @@ exports.userCollection = async(req, res, next) => {
  * 컬렉션작성(미리보기)
  ********************/
 exports.workPost = async(req, res, next) => {
-  let imageUrl;
+  let image;
   let result = '';
-
-  if(!req.file) imageUrl = null;
-  else imageUrl = req.file.location;
+  if(!req.file) image = null;
+  else image = req.file.location;
 
   try {
-    const userData = {
+    const collectionData = {
       user_idx: req.body.user_idx,
       exhibition_idx: req.body.exhibition_idx,
-      collection_content : req.body.content,
-      collection_image: imageUrl,
-      collection_created : moment(new Date()).format('YYYYMMDD')
+      collection_content : req.body.collection_content,
+      collection_image: image
     };
 
-    result = await collectionModel.workPost(userData);
+    result = await collectionModel.workPost(collectionData);
 
   } catch (error) {
     console.log(error);
     return next(error);
   }
   return res.json(result);
+
+  // ,
+  // collection_created : moment(new Date()).format('YYYYMMDD'),
+  // collection_updated : moment(new Date()).format('YYYYMMDD')
 };
 
 /*******************
  * 컬렉션작성(내가찍은사진)
  ********************/
 exports.picturePost = async(req, res, next) => {
-  let imageUrl;
+  let image;
   let result = '';
-
-  if(!req.file) imageUrl = null;
-  else imageUrl = req.file.location;
+  if(!req.file) image = null;
+  else image = req.file.location;
 
   try {
-    const userData = {
+    const collectionData = {
       user_idx: req.body.user_idx,
       exhibition_idx: req.body.exhibition_idx,
-      collection_content : req.body.content,
-      collection_image: imageUrl,
-      collection_created : moment(new Date()).format('YYYYMMDD')
+      collection_content : req.body.collection_content,
+      collection_image: image
     };
 
-    result = await collectionModel.picturePost(userData);
+    result = await collectionModel.picturePost(collectionData);
 
   } catch (error) {
     console.log(error);
@@ -101,10 +87,9 @@ exports.picturePost = async(req, res, next) => {
 exports.detailCollection = async(req, res, next) => {
   let result = '';
   try {
-    const userData = req.params.collection_idx;
+    const collectionIdxData = req.params.collection_idx;
 
-    result = await collectionModel.detailCollection(userData);
-
+    result = await collectionModel.detailCollection(collectionIdxData);
   } catch (error) {
     console.log(error);
     return next(error);
@@ -118,13 +103,12 @@ exports.detailCollection = async(req, res, next) => {
 exports.editCollection = async(req, res, next) => {
   let result ='';
   try {
-    const userData = {
-      collection_idx : req.params.collection_idx,
-      content : req.body.content,
-      updated : moment(new Date()).format('YYYYMMDD')
+    const collectionEditData = {
+      collection_idx : req.body.collection_idx,
+      content : req.body.content
     };
 
-    result = await collectionModel.editCollection(userData);
+    result = await collectionModel.editCollection(collectionEditData);
 
   } catch (error) {
     console.log(error);
@@ -139,9 +123,9 @@ exports.editCollection = async(req, res, next) => {
 exports.delCollection = async(req, res, next) => {
   let result ='';
   try {
-    const userData = req.params.collection_idx;
+    const collectionIdxData = req.params.collection_idx;
 
-    result = await collectionModel.delCollection(userData);
+    result = await collectionModel.delCollection(collectionIdxData);
 
   } catch (error) {
     console.log(error);
