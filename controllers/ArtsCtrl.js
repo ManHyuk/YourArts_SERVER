@@ -116,3 +116,56 @@ exports.todoList = async(req,res,next) => {
   }
   return res.r(result);
 };
+
+
+exports.exDetail = async(req, res, next) => {
+
+  let temp = '';
+
+  try {
+    const data = {
+      idx: req.params.idx,
+    };
+
+    temp = await artsModel.exDetail(data);
+
+    console.log(temp);
+  }catch (error) {
+    return next(error);
+  }
+
+  temp[0][0].images = [];
+
+  temp[1].forEach((imgObj) => {
+
+    temp[0][0].images.push({
+      index: imgObj.work_idx,
+      url: imgObj.work_image
+    });
+  });
+
+
+  const result = temp[0][0];
+
+
+  return res.r(result);
+
+};
+
+exports.workDetail = async(req, res, next) => {
+  let result = '';
+
+  try{
+    const data = {
+      idx: req.params.idx,
+    }
+
+    result = await artsModel.workDetail(data);
+
+  } catch (error) {
+    return next(error);
+  }
+
+
+  return res.r(result)
+};

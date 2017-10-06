@@ -38,7 +38,7 @@ require('./routes')(app);
 // error handler
 require('./ErrorHandler')(app);
 
-const date = new Date();
+
 
 
 const PORT = 3000;
