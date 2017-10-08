@@ -40,19 +40,37 @@ exports.userCollection = (userIdxData) => {
  *  @param: collectionData = {user_idx, exhibition_idx, content, image, created}
  ********************/
  exports.collectionPost = (collectionData) => {
-   return new Promise((resolve, reject) =>{
-
+  return new Promise((resolve, reject) => {
      const sql = "INSERT INTO collection set ?";
 
-     pool.query(sql, collectionData, (err, rows) => {
-       if (err) {
-         reject(err);
-       } else {
-         resolve(rows);
-       }
-     })
-   });
- };
+      pool.query(sql, collectionData, (err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          if (rows.affectedRows === 1) {
+            resolve(rows);
+          } else {
+            const _err = new Error("Collection Post error");
+            reject(_err);
+          }
+        }
+      });
+    }
+  ).then((result) => {
+      return new Promise((resolve, reject) => {
+        const sql = "SELECT * FROM collection WHERE collection_idx = ?";
+
+        pool.query(sql, result.insertId, (err, rows) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        });
+      });
+    }
+  );
+};
 
  /*******************
   *  컬렉션상세조회
@@ -89,19 +107,38 @@ exports.detailCollection = (collectionIdxData) => {
  *  @param: collectionData = {collection_idx, content}}
  ********************/
 exports.editCollection = (collectionEditData) => {
-  return new Promise((resolve, reject) =>{
-
+ return new Promise((resolve, reject) => {
     const sql = "UPDATE collection SET collection_content=? WHERE collection_idx=?";
 
-    pool.query(sql, [collectionEditData.content, collectionEditData.collection_idx], (err, rows) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(rows);
-      }
-    })
-  });
+     pool.query(sql, [collectionEditData.collection_content, collectionEditData.collection_idx], (err, rows) => {
+       if (err) {
+         reject(err);
+       } else {
+         if (rows.affectedRows === 1) {
+           resolve(collectionEditData.collection_idx);
+         } else {
+           const _err = new Error("Collection Edit error");
+           reject(_err);
+         }
+       }
+     });
+   }
+ ).then((data) => {
+     return new Promise((resolve, reject) => {
+       const sql = "SELECT * FROM collection WHERE collection_idx=?";
+
+       pool.query(sql, data, (err, rows) => {
+         if (err) {
+           reject(err);
+         } else {
+           resolve(rows);
+         }
+       });
+     });
+   }
+ );
 };
+
 
 /*******************
  *  컬렉션삭제
@@ -115,7 +152,12 @@ exports.delCollection = (collectionIdxData) => {
       if (err) {
         reject(err);
       } else {
-        resolve(rows);
+        if (rows.affectedRows === 1) {
+          resolve(rows);
+        } else {
+          const _err = new Error("Collection Delete error");
+          reject(_err);
+        }
       }
     })
   });

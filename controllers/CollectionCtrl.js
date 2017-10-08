@@ -5,8 +5,6 @@ const config = require('../config/config');
 const resMsg = require('../errors.json');
 
 
-//데이터받아서 쿼리문 실행
-
 /*******************
  * user의콜랙션조회
  ********************/
@@ -75,7 +73,7 @@ exports.editCollection = async(req, res, next) => {
   try {
     const collectionEditData = {
       collection_idx : req.body.collection_idx,
-      content : req.body.content
+      collection_content : req.body.collection_content
     };
 
     result = await collectionModel.editCollection(collectionEditData);
