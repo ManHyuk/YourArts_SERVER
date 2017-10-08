@@ -3,7 +3,6 @@
 const collectionModel = require('../models/CollectioModel');
 const config = require('../config/config');
 const resMsg = require('../errors.json');
-const moment = require('moment');
 
 
 //데이터받아서 쿼리문 실행
@@ -22,13 +21,13 @@ exports.userCollection = async(req, res, next) => {
     console.log(error);
     return next(error);
   }
-  return res.json(result);
+  return res.r(result);
 };
 
 /*******************
- * 컬렉션작성(미리보기)
+ * 컬렉션작성
  ********************/
-exports.workPost = async(req, res, next) => {
+exports.collectionPost = async(req, res, next) => {
   let image;
   let result = '';
   if(!req.file) image = null;
@@ -42,44 +41,15 @@ exports.workPost = async(req, res, next) => {
       collection_image: image
     };
 
-    result = await collectionModel.workPost(collectionData);
+    result = await collectionModel.collectionPost(collectionData);
 
   } catch (error) {
     console.log(error);
     return next(error);
   }
-  return res.json(result);
-
-  // ,
-  // collection_created : moment(new Date()).format('YYYYMMDD'),
-  // collection_updated : moment(new Date()).format('YYYYMMDD')
+  return res.r(result);
 };
 
-/*******************
- * 컬렉션작성(내가찍은사진)
- ********************/
-exports.picturePost = async(req, res, next) => {
-  let image;
-  let result = '';
-  if(!req.file) image = null;
-  else image = req.file.location;
-
-  try {
-    const collectionData = {
-      user_idx: req.body.user_idx,
-      exhibition_idx: req.body.exhibition_idx,
-      collection_content : req.body.collection_content,
-      collection_image: image
-    };
-
-    result = await collectionModel.picturePost(collectionData);
-
-  } catch (error) {
-    console.log(error);
-    return next(error);
-  }
-  return res.json(result);
-};
 
 /*******************
  * 컬렉션상세조회
@@ -94,7 +64,7 @@ exports.detailCollection = async(req, res, next) => {
     console.log(error);
     return next(error);
   }
-  return res.json(result);
+  return res.r(result);
 };
 
 /*******************
@@ -114,7 +84,7 @@ exports.editCollection = async(req, res, next) => {
     console.log(error);
     return next(error);
   }
-  return res.json(result);
+  return res.r(result);
 };
 
 /*******************
@@ -131,5 +101,5 @@ exports.delCollection = async(req, res, next) => {
     console.log(error);
     return next(error);
   }
-  return res.json(result);
+  return res.r(result);
 };

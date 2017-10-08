@@ -5,6 +5,7 @@ const userCtrl = require('../controllers/UserCtrl');
 const artsCtrl = require('../controllers/ArtsCtrl');
 const collectionCtrl = require('../controllers/CollectionCtrl');
 const imageCtrl = require('../controllers/ImageCtrl');
+const mypageCtrl = require('../controllers/MypageCtrl');
 
 module.exports = (router) => {
 
@@ -35,21 +36,23 @@ module.exports = (router) => {
     .get(artsCtrl.workDetail);
 
 
-// COLLECTIONS
+  // COLLECTIONS
   router.route('/userCollections/:user_idx')
     .get(collectionCtrl.userCollection);
-  router.route('/collections/work')
-    .post(imageCtrl.uploadSingle, collectionCtrl.workPost);
-  router.route('/collections/picture')
-    .post(imageCtrl.uploadSingle, collectionCtrl.picturePost);
-
+  router.route('/collections')
+    .post(imageCtrl.uploadSingle, collectionCtrl.collectionPost)
+    .put(collectionCtrl.editCollection);
 
   router.route('/collections/:collection_idx')
     .get(collectionCtrl.detailCollection)
     .delete(collectionCtrl.delCollection);
 
-    router.route('/collections/edit')
-      .put(collectionCtrl.editCollection);
+
+  //MYPAGE
+  router.route('/watch/:user_idx')
+    .get(mypageCtrl.watch);
+  router.route('/wish/:user_idx')
+    .get(mypageCtrl.wish);
 
 
   return router;

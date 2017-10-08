@@ -13,8 +13,17 @@ const pool = mysql.createPool(DBConfig);
  ********************/
 exports.userCollection = (userIdxData) => {
  return new Promise((resolve, reject) =>{
-
-   const sql = "SELECT * FROM collection WHERE user_idx=?";
+   const sql =
+     `
+     SELECT
+       collection_idx,
+       user_idx,
+       exhibition_idx,
+       collection_content,
+       collection_image
+     FROM collection
+     WHERE user_idx=?;
+     `;
 
    pool.query(sql, userIdxData, (err, rows) => {
      if (err) {
@@ -27,32 +36,13 @@ exports.userCollection = (userIdxData) => {
 };
 
 /*******************
- *  컬렉션작성(미리보기)
+ *  컬렉션작성
  *  @param: collectionData = {user_idx, exhibition_idx, content, image, created}
  ********************/
- exports.workPost = (collectionData) => {
+ exports.collectionPost = (collectionData) => {
    return new Promise((resolve, reject) =>{
 
      const sql = "INSERT INTO collection set ?";
-
-     pool.query(sql, collectionData, (err, rows) => {
-       if (err) {
-         reject(err);
-       } else {
-         resolve(rows);
-       }
-     })
-   });
- };
-
- /*******************
-  *  컬렉션작성(내가찍은사진)
-  *  @param: collectionData = {user_idx, exhibition_idx, content, image, created}
-  ********************/
- exports.picturePost = (collectionData) => {
-   return new Promise((resolve, reject) =>{
-
-     const sql = "INSERT INTO collection SET ?";
 
      pool.query(sql, collectionData, (err, rows) => {
        if (err) {
@@ -71,7 +61,17 @@ exports.userCollection = (userIdxData) => {
 exports.detailCollection = (collectionIdxData) => {
   return new Promise((resolve, reject) => {
 
-    const sql = "SELECT * FROM collection WHERE collection_idx=?";
+    const sql =
+      `
+      SELECT
+        collection_idx,
+        user_idx,
+        exhibition_idx,
+        collection_content,
+        collection_image
+      FROM collection
+      WHERE collection_idx=?;
+      `;
 
     pool.query(sql, collectionIdxData, (err, rows) => {
       if (err) {
@@ -107,7 +107,6 @@ exports.editCollection = (collectionEditData) => {
  *  컬렉션삭제
  *  @param: collectionData = collection_idx
  ********************/
- //존재하지않는 게시물일때
 exports.delCollection = (collectionIdxData) => {
   return new Promise((resolve, reject) =>{
     const sql = "DELETE FROM collection WHERE collection_idx=?";
