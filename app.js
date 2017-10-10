@@ -34,7 +34,6 @@ app.use((req, res, next) => {
 });
 
 
-
 require('./routes')(app);
 
 
@@ -42,6 +41,8 @@ require('./routes')(app);
 
 // error handler
 require('./ErrorHandler')(app);
+
+const date = new Date();
 
 
 const PORT = 3000;

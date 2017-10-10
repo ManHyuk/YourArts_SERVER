@@ -3,7 +3,6 @@
 const collectionModel = require('../models/CollectioModel');
 const config = require('../config/config');
 const resMsg = require('../errors.json');
-const moment = require('moment');
 
 
 //데이터받아서 쿼리문 실행
