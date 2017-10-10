@@ -9,7 +9,7 @@ const pool = mysql.createPool(DBConfig);
 
 /*******************
  *  user의콜랙션조회
- *  @param: user_idx
+ *  @param userIdxData
  ********************/
 exports.userCollection = (userIdxData) => {
  return new Promise((resolve, reject) =>{
@@ -37,7 +37,7 @@ exports.userCollection = (userIdxData) => {
 
 /*******************
  *  컬렉션작성
- *  @param: collectionData = {user_idx, exhibition_idx, content, image, created}
+ *  @param collectionData = {user_idx, exhibition_idx, content, image, created}
  ********************/
  exports.collectionPost = (collectionData) => {
   return new Promise((resolve, reject) => {
@@ -74,7 +74,7 @@ exports.userCollection = (userIdxData) => {
 
  /*******************
   *  컬렉션상세조회
-  *  @param: collectionData = collection_idx
+  *  @param collectionData = collection_idx
   ********************/
 exports.detailCollection = (collectionIdxData) => {
   return new Promise((resolve, reject) => {
@@ -104,7 +104,7 @@ exports.detailCollection = (collectionIdxData) => {
 //
 /*******************
  *  컬렉션수정
- *  @param: collectionData = {collection_idx, content}}
+ *  @param collectionData = {collection_idx, content}}
  ********************/
 exports.editCollection = (collectionEditData) => {
  return new Promise((resolve, reject) => {
@@ -142,7 +142,7 @@ exports.editCollection = (collectionEditData) => {
 
 /*******************
  *  컬렉션삭제
- *  @param: collectionData = collection_idx
+ *  @param collectionData = collection_idx
  ********************/
 exports.delCollection = (collectionIdxData) => {
   return new Promise((resolve, reject) =>{

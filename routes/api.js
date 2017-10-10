@@ -6,6 +6,7 @@ const artsCtrl = require('../controllers/ArtsCtrl');
 const collectionCtrl = require('../controllers/CollectionCtrl');
 const imageCtrl = require('../controllers/ImageCtrl');
 const mypageCtrl = require('../controllers/MypageCtrl');
+const likeHeartCtrl = require('../controllers/LikeHeartCtrl');
 
 module.exports = (router) => {
 
@@ -34,6 +35,14 @@ module.exports = (router) => {
 
   router.route('/works/:idx')
     .get(artsCtrl.workDetail);
+
+  //like, Heart
+  router.route('/like')
+    .post(likeHeartCtrl.like)
+    .put(likeHeartCtrl.likeEdit);
+  router.route('/heart')
+    .post(likeHeartCtrl.heart)
+    .put(likeHeartCtrl.heartEdit);
 
 
   // COLLECTIONS
