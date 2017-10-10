@@ -43,6 +43,12 @@
     "message": "이미 승인 절차가 진행된 유저입니다.",
     "description": "Already confirm user"
   },
+  "1406": {
+    "status": 400,
+    "code": 0,
+    "message": "중복된 데이터입니다.",
+    "description": "Already Existent data"
+  },
 
 
   "9401": {
