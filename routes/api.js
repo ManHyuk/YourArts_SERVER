@@ -7,6 +7,9 @@ const collectionCtrl = require('../controllers/CollectionCtrl');
 const imageCtrl = require('../controllers/ImageCtrl');
 const mypageCtrl = require('../controllers/MypageCtrl');
 
+const likeHeartCtrl = require('../controllers/LikeHeartCtrl');
+
+
 module.exports = (router) => {
 
   // USER
@@ -35,15 +38,21 @@ module.exports = (router) => {
   router.route('/works/:idx')
     .get(artsCtrl.workDetail);
 
+  //like, Heart
+  router.route('/like')
+    .post(likeHeartCtrl.like)
+
+  router.route('/heart')
+    .post(likeHeartCtrl.heart)
+
+
 
   // COLLECTIONS
   router.route('/userCollections/:user_idx')
     .get(collectionCtrl.userCollection);
-  router.route('/collections/work')
-    .post(imageCtrl.uploadSingle, collectionCtrl.workPost);
-  router.route('/collections/picture')
-    .post(imageCtrl.uploadSingle, collectionCtrl.picturePost);
-
+  router.route('/collections')
+    .post(imageCtrl.uploadSingle, collectionCtrl.collectionPost)
+    .put(collectionCtrl.editCollection);
 
 
 
@@ -55,7 +64,10 @@ module.exports = (router) => {
     .delete(collectionCtrl.delCollection);
 
 
-//MYPAGE
+
+
+  //MYPAGE
+
   router.route('/watch/:user_idx')
     .get(mypageCtrl.watch);
   router.route('/wish/:user_idx')
