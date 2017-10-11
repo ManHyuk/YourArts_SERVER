@@ -41,9 +41,11 @@ module.exports = (router) => {
   //like, Heart
   router.route('/like')
     .post(likeHeartCtrl.like)
+    .put(likeHeartCtrl.likeEdit);
 
   router.route('/heart')
     .post(likeHeartCtrl.heart)
+    .put(likeHeartCtrl.heartEdit);
 
 
 
