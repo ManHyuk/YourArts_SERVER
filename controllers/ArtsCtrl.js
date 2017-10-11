@@ -159,7 +159,7 @@ exports.workDetail = async(req, res, next) => {
   try{
     const data = {
       idx: req.params.idx,
-    }
+    };
 
     result = await artsModel.workDetail(data);
 
