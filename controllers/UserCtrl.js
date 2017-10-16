@@ -211,3 +211,43 @@ exports.profile = async(req, res, next) => {
   }
   return res.json(result);
 };
+
+/******
+ * 닉네임수정
+ * @param req
+ */
+exports.edit = async(req, res, next) => {
+  let result ='';
+  try {
+
+    const editData = {
+      user_idx : req.user_idx,
+      nickname : req.body.nickname
+    };
+
+    result = await userModel.edit(editData);
+
+  } catch (error) {
+    console.log(error);
+    return next(error)
+  }
+  return res.r(result);
+};
+
+/******
+ * 회원탈퇴
+ * @param req
+ */
+exports.delUser = async(req, res, next) => {
+  let result ='';
+  try {
+    const data = req.user_idx;
+
+    result = await userModel.delUser(data);
+
+  } catch (error) {
+    console.log(error);
+    return next(error)
+  }
+  return res.r(result);
+};

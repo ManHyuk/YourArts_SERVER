@@ -317,10 +317,9 @@ exports.heartEdit = (heartData) => {
             reject(1407);
           }
         }
-    });
-  });
-    }
-      ).then((result) => {
+      });
+  }
+).then((result) => {
       return new Promise((resolve, reject) => {
 
         const sql =

@@ -24,6 +24,10 @@ module.exports = (router) => {
   router.route('/users/fb/login')
     .post(userCtrl.fbLogin);
 
+  router.route('/users')
+    .put(authCtrl.auth, userCtrl.edit)
+    .delete(authCtrl.auth, userCtrl.delUser);
+
 
 
   // ARTS
