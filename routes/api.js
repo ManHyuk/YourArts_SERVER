@@ -32,7 +32,8 @@ module.exports = (router) => {
     .get(artsCtrl.search);
 
   router.route('/arts/:idx')
-    .get(artsCtrl.exDetail);
+    .get(authCtrl.auth, artsCtrl.exDetail);
+
 
 
   router.route('/works/:idx')
