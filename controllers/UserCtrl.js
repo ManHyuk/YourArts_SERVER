@@ -1,15 +1,16 @@
 'use strict';
 
+const request = require('request');
+
 const userModel = require('../models/UserModel');
 const config = require('../config/config');
 const resMsg = require('../errors.json');
+
 
 /*******************
  *  Register
  ********************/
 exports.register = async(req, res, next) => {
-
-
   let pw;
   if (req.body.pw1 !== req.body.pw2) {
     return res.status(400).json(resMsg[1404])
@@ -49,6 +50,54 @@ exports.register = async(req, res, next) => {
     "message": "success",
     "result" : result[0]
   });
+};
+
+//TODO 토큰받아올때 예외처리 추가할 것!!!
+exports.fbRegister = async(req, res, next) => {
+  const data = {
+    access_token : req.body.access_token
+  };
+
+  let userData = {};
+  let result ;
+
+  const uri = {
+    method:'GET',
+    uri:'https://graph.facebook.com/v2.10/me?access_token='+data.access_token+'&fileds=id,name'
+  };
+
+  function option(error, response, body){
+    if(error){
+      throw error;
+    }
+
+    userData = JSON.parse(body);
+
+    cb(userData);
+  }
+
+  async function cb(data){
+
+    try {
+      userData.id = data.id;
+      userData.name = data.name;
+
+      result = await userModel.fbRegister(userData);
+
+
+    } catch (error) {
+      console.log(error);
+      return next(error);
+    }
+
+    return res.r(result)
+
+  }
+  request(uri, option, cb);
+
+
+
+
 
 
 };
@@ -71,7 +120,6 @@ exports.check = async(req, res, next) => {
 
   // FIXME 리턴값 수정하기
   return res.status(200).json(result);
-
 
 };
 
@@ -104,6 +152,49 @@ exports.login = async(req, res, next) => {
   //   "result": result
   // });
   return res.r(result);
+};
+
+exports.fbLogin = async(req, res,next) => {
+  const data = {
+    access_token : req.body.access_token
+  };
+
+  let userData = {};
+  let result ='';
+  const uri = {
+    method:'GET',
+    uri:'https://graph.facebook.com/v2.10/me?access_token='+data.access_token+'&fileds=id,name'
+  };
+
+  function option(error, response, body){
+    if(error){
+      throw error;
+    }
+
+    userData = JSON.parse(body);
+
+    cb(userData);
+  }
+
+  async function cb(data){
+
+    try {
+      userData.id = data.id;
+      userData.name = data.name;
+
+      result = await userModel.fbLogin(userData);
+
+
+    } catch (error) {
+      console.log(error);
+      return next(error);
+    }
+
+    return res.r(result)
+
+  }
+  request(uri, option, cb);
+
 };
 
 
