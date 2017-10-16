@@ -50,13 +50,11 @@ module.exports = (router) => {
 
 
   // COLLECTIONS
-  router.route('/userCollections/:user_idx')
-    .get(collectionCtrl.userCollection);
+  router.route('/userCollections')
+    .get(authCtrl.auth, collectionCtrl.userCollection);
   router.route('/collections')
     .post(imageCtrl.uploadSingle, collectionCtrl.collectionPost)
     .put(collectionCtrl.editCollection);
-
-
 
   router.route('/collections/edit')
     .put(collectionCtrl.editCollection);
@@ -66,14 +64,11 @@ module.exports = (router) => {
     .delete(collectionCtrl.delCollection);
 
 
-
-
   //MYPAGE
-
-  router.route('/watch/:user_idx')
-    .get(mypageCtrl.watch);
-  router.route('/wish/:user_idx')
-    .get(mypageCtrl.wish);
+  router.route('/watch')
+    .get(authCtrl.auth, mypageCtrl.watch);
+  router.route('/wish')
+    .get(authCtrl.auth, mypageCtrl.wish);
 
 
   return router;

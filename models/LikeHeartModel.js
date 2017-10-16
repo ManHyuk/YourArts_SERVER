@@ -334,7 +334,7 @@ return new Promise((resolve, reject) => {
     });
   }
 ).then(() => {
-     return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
 
        const sql =
          `

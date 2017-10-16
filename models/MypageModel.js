@@ -47,8 +47,6 @@ const date = new Date();
  * @returns {Promise}
  */
 
-
- //종료된전시는 어덯게 없어짐
 exports.wish = (wishData) => {
   return new Promise((resolve, reject) => {
     const sql =

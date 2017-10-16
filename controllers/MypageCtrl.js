@@ -11,7 +11,7 @@ const resMsg = require('../errors.json');
 exports.watch = async(req, res, next) => {
   let result = '';
   try {
-    const watchData = req.params.user_idx;
+    const watchData = req.user_idx;
     result = await mypageModel.watch(watchData);
   } catch(error) {
     return next(error);
@@ -25,35 +25,23 @@ exports.watch = async(req, res, next) => {
  * @param req
  */
 
-exports.wish = async(req, res, next) => {
-  let result = '';
-  try {
-    const wishData = req.params.user_idx;
-    result = await mypageModel.wish(wishData);
-  } catch(error) {
-    return next(error);
-  }
-  return res.json(result);
-};
-
  exports.wish = async(req, res, next) => {
    let result = [];
    let data = '';
    try {
-     const wishData = req.params.user_idx;
+     const wishData = req.user_idx;
      data = await mypageModel.wish(wishData);
    } catch(error) {
      return next(error);
    }
 
    for(let i = 0 ; i<data.length; i++) {
-     // 시작 +, 종료 - => 진행중
+     //종료 - => 진행중 or 예정
      if (data[i].end_date < 0) {
-       data[i].flag = 'doing';
+       data[i].flag = 'do';
        result.push(data[i]);
      }
    }
 
    return res.r(result);
  };
-
