@@ -16,8 +16,13 @@ module.exports = (router) => {
   router.route('/users/register')
     .post(userCtrl.register);
 
+  router.route('/users/fb/register')
+    .post(userCtrl.fbRegister);
+
   router.route('/users/login')
    .post(userCtrl.login);
+  router.route('/users/fb/login')
+    .post(userCtrl.fbLogin);
 
 
 
