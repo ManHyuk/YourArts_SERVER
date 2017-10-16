@@ -69,44 +69,83 @@ exports.list = (data) => {
 };
 
 
-
-
 exports.exDetail = (data) => {
-  let results = [];
-
-  // 전시 상세 조회
   return new Promise((resolve, reject) => {
+    let resultData = {};
     const sql =
       `
-        SELECT
-          e.exhibition_idx,
-          exhibition_name,
-          date_format(convert_tz(exhibition_start_date, "+00:00", "+00:00"), "%Y.%m.%d") as exhibition_stard_date,
-          date_format(convert_tz(exhibition_end_date, "+00:00", "+00:00"), "%Y.%m.%d") as exhibition_end_date,
-          exhibition_start_time,
-          exhibition_end_time,
-          exhibition_location,
-          exhibition_description,
-          exhibition_picture,
-          ROUND((exhibition_sum/exhibition_count), 1) as avg,
-          l.like_count,
-          h.heart_used
-        FROM exhibition as e
-          LEFT JOIN \`like\` as l ON e.exhibition_idx = l.exhibition_idx
-          LEFT JOIN heart as h ON e.exhibition_idx = h.exhibition_idx
-        WHERE e.exhibition_idx = ?
-
+        SELECT heart_used
+        FROM heart
+        WHERE exhibition_idx= ? AND user_idx= ?
       `;
-    pool.query(sql, [data.idx], (err, rows) => {
-      if(err) {
-        reject(err);
-      } else {
-        results.push(rows);
-        resolve(rows);
+    pool.query(sql, [data.exIdx, data.userIdx], (err, rows)=> {
+      if(err){
+        reject(err)
+      }else {
+        if(rows.length === 0) {
+          resultData.heart_used = 0;
+        } else {
+          resultData.heart_used = rows[0].heart_used;
+        }
+        resolve(resultData);
       }
+    })
+  }).then((resultData) => {
+    return new Promise((resolve, reject) => {
+      const sql =
+        `
+        SELECT like_count
+        FROM \`like\`
+        WHERE exhibition_idx=? and user_idx= ?
+        `;
+      pool.query(sql, [data.exIdx, data.userIdx], (err,rows) => {
+        if(err){
+          reject(err);
+        } else {
+          if (rows.length === 0){
+            resultData.like_count = 0;
+          } else {
+            resultData.like_count = rows[0].like_count;
+          }
+          resolve(resultData);
+        }
+      });
     });
-  }).then(() => {
-    // 전시 미리보기 이미지 조회
+  }).then((resultData) => {
+    return new Promise((resolve, reject) => {
+      const sql =
+        `
+       SELECT
+        e.exhibition_idx,
+        exhibition_name,
+        date_format(convert_tz(exhibition_start_date, "+00:00", "+00:00"), "%Y.%m.%d") AS exhibition_stard_date,
+        date_format(convert_tz(exhibition_end_date, "+00:00", "+00:00"), "%Y.%m.%d")   AS exhibition_end_date,
+        exhibition_start_time,
+        exhibition_end_time,
+        exhibition_location,
+        exhibition_description,
+        exhibition_picture,
+        ROUND((exhibition_sum / exhibition_count), 1) AS avg
+      FROM exhibition AS e
+      WHERE e.exhibition_idx = ?
+      `;
+      pool.query(sql, [data.exIdx], (err, rows) => {
+        if(err){
+          reject(err)
+        }else {
+            resultData.exhibition_idx= rows[0].exhibition_idx;
+            resultData.exhibition_name= rows[0].exhibition_name;
+            resultData.exhibition_stard_date= rows[0].exhibition_stard_date;
+            resultData.exhibition_end_date= rows[0].exhibition_end_date;
+            resultData.exhibition_location=rows[0].exhibition_location;
+            resultData.exhibition_description= rows[0].exhibition_description;
+            resultData.exhibition_picture= rows[0].exhibition_picture;
+            resultData.avg = rows[0].avg;
+          resolve(resultData)
+        }
+      })
+    });
+  }).then((resultData) => {
     return new Promise((resolve, reject) => {
       const sql =
         `
@@ -116,18 +155,77 @@ exports.exDetail = (data) => {
         FROM work as w
         WHERE w.exhibition_idx = ?
         `;
-
-      pool.query(sql, [data.idx], (err, rows) => {
+      pool.query(sql, [data.exIdx], (err, rows) => {
         if(err){
-          reject(err)
+          reject(err);
         }else {
-          results.push(rows);
-          resolve(results);
+          resultData.images = rows;
+          resolve(resultData);
         }
       });
-    })
-  });
+    });
+  })
 };
+
+
+
+// exports.exDetail = (data) => {
+//   let results = [];
+//
+//   // 전시 상세 조회
+//   return new Promise((resolve, reject) => {
+//     const sql =
+//       `
+//         SELECT
+//           e.exhibition_idx,
+//           exhibition_name,
+//           date_format(convert_tz(exhibition_start_date, "+00:00", "+00:00"), "%Y.%m.%d") as exhibition_stard_date,
+//           date_format(convert_tz(exhibition_end_date, "+00:00", "+00:00"), "%Y.%m.%d") as exhibition_end_date,
+//           exhibition_start_time,
+//           exhibition_end_time,
+//           exhibition_location,
+//           exhibition_description,
+//           exhibition_picture,
+//           ROUND((exhibition_sum/exhibition_count), 1) as avg,
+//           l.like_count,
+//           h.heart_used
+//         FROM exhibition as e
+//           LEFT JOIN \`like\` as l ON e.exhibition_idx = l.exhibition_idx
+//           LEFT JOIN heart as h ON e.exhibition_idx = h.exhibition_idx
+//         WHERE e.exhibition_idx = ?
+//
+//       `;
+//     pool.query(sql, [data.idx], (err, rows) => {
+//       if(err) {
+//         reject(err);
+//       } else {
+//         results.push(rows);
+//         resolve(rows);
+//       }
+//     });
+//   }).then(() => {
+//     // 전시 미리보기 이미지 조회
+//     return new Promise((resolve, reject) => {
+//       const sql =
+//         `
+//         SELECT
+//           work_idx,
+//           work_image
+//         FROM work as w
+//         WHERE w.exhibition_idx = ?
+//         `;
+//
+//       pool.query(sql, [data.idx], (err, rows) => {
+//         if(err){
+//           reject(err)
+//         }else {
+//           results.push(rows);
+//           resolve(results);
+//         }
+//       });
+//     })
+//   });
+// };
 
 exports.workDetail = (data) => {
   return new Promise((resolve, reject) => {

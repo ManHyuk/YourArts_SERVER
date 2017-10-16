@@ -119,39 +119,59 @@ exports.todoList = async(req,res,next) => {
 };
 
 
-exports.exDetail = async(req, res, next) => {
+exports.exDetail= async(req, res, next) => {
+  let result = '';
 
-  let temp = '';
-
-  try {
+  try{
     const data = {
-      idx: req.params.idx,
+      exIdx: req.params.idx,
+      userIdx: req.user_idx,
     };
+    console.log(data);
 
-    temp = await artsModel.exDetail(data);
-
-    console.log(temp);
-  }catch (error) {
+    result = await artsModel.exDetail(data);
+  } catch (error){
     return next(error);
   }
-
-  temp[0][0].images = [];
-
-  temp[1].forEach((imgObj) => {
-
-    temp[0][0].images.push({
-      index: imgObj.work_idx,
-      url: imgObj.work_image
-    });
-  });
-
-
-  const result = temp[0][0];
-
 
   return res.r(result);
 
 };
+
+// exports.exDetail = async(req, res, next) => {
+//
+//   let temp = '';
+//
+//   try {
+//     const data = {
+//       exIdx: req.params.idx,
+//       userIdx: 1
+//     };
+//
+//     temp = await artsModel.exDetail(data);
+//
+//     console.log(temp);
+//   }catch (error) {
+//     return next(error);
+//   }
+//
+//   temp[0][0].images = [];
+//
+//   temp[1].forEach((imgObj) => {
+//
+//     temp[0][0].images.push({
+//       index: imgObj.work_idx,
+//       url: imgObj.work_image
+//     });
+//   });
+//
+//
+//   const result = temp[0][0];
+//
+//
+//   return res.r(result);
+//
+// };
 
 exports.workDetail = async(req, res, next) => {
   let result = '';
@@ -159,7 +179,7 @@ exports.workDetail = async(req, res, next) => {
   try{
     const data = {
       idx: req.params.idx,
-    }
+    };
 
     result = await artsModel.workDetail(data);
 

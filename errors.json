@@ -49,6 +49,12 @@
     "message": "중복된 데이터입니다.",
     "description": "Already Existent data"
   },
+  "1407": {
+    "status": 400,
+    "code": 0,
+    "message": "존재하지 않는 데이터입니다.",
+    "description": "Nonexistent data"
+  },
 
 
   "9401": {

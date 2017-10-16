@@ -32,7 +32,8 @@ module.exports = (router) => {
     .get(artsCtrl.search);
 
   router.route('/arts/:idx')
-    .get(artsCtrl.exDetail);
+    .get(authCtrl.auth, artsCtrl.exDetail);
+
 
 
   router.route('/works/:idx')
@@ -41,9 +42,11 @@ module.exports = (router) => {
   //like, Heart
   router.route('/like')
     .post(likeHeartCtrl.like)
+    .put(likeHeartCtrl.likeEdit);
 
   router.route('/heart')
     .post(likeHeartCtrl.heart)
+    .put(likeHeartCtrl.heartEdit);
 
 
 
