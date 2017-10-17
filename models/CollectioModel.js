@@ -115,12 +115,12 @@ exports.editCollection = (editData) => {
         FROM collection
         WHERE collection_idx = ? 
       `;
-
     pool.query(sql, [editData.collection_idx], (err, rows) => {
       if(err){
         reject(err)
       }else{
         if (editData.user_idx !== rows[0].user_idx){
+          // 글쓴이인지 확인
           reject(9402)
         } else {
           resolve(null)
@@ -168,7 +168,6 @@ exports.editCollection = (editData) => {
  *  컬렉션삭제
  *  @param collectionData = collection_idx
  ********************/
-
 exports.delCollection = (delData) => {
   return new Promise((resolve, reject) => {
     const sql =
@@ -183,6 +182,7 @@ exports.delCollection = (delData) => {
         reject(err)
       }else{
         if (delData.user_idx !== rows[0].user_idx){
+          // 글쓴이인지 확인
           reject(9402)
         } else {
           resolve(null)

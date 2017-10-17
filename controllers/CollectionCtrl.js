@@ -77,7 +77,7 @@ exports.editCollection = async(req, res, next) => {
       collection_content : req.body.collection_content
     };
 
-    result = await collectionModel.edit(collectionEditData);
+    result = await collectionModel.editCollection(collectionEditData);
 
   } catch (error) {
     console.log(error);

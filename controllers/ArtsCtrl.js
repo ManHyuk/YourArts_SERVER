@@ -127,7 +127,6 @@ exports.exDetail= async(req, res, next) => {
       exIdx: req.params.art_idx,
       userIdx: req.user_idx,
     };
-    console.log(data);
 
     result = await artsModel.exDetail(data);
   } catch (error){
