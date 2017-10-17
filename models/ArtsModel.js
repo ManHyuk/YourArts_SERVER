@@ -242,7 +242,7 @@ exports.workDetail = (data) => {
         FROM work AS w
           LEFT JOIN exhibition AS e ON w.exhibition_idx = e.exhibition_idx
 
-        WHERE w.exhibition_idx = ?
+        WHERE w.work_idx = ?
       `;
     pool.query(sql, [data.idx], (err, rows) => {
       if(err) {
