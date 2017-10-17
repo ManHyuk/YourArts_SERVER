@@ -30,11 +30,11 @@ exports.register = (userData) => {
   ).then(() => {
       return new Promise((resolve, reject) => {
         const sql =
-          "INSERT INTO user(user_id, user_pw, user_nickname) " +
-          "VALUES (?, ?, ?) ";
+          "INSERT INTO user(user_id, user_pw, user_nickname, user_email) " +
+          "VALUES (?, ?, ?, ?) ";
 
 
-        pool.query(sql, [userData.id, userData.pw, userData.nickname], (err, rows) => {  // 가입 시도
+        pool.query(sql, [userData.id, userData.pw, userData.nickname, userData.email], (err, rows) => {  // 가입 시도
           if (err) {
             reject(err);
           } else {
@@ -51,7 +51,7 @@ exports.register = (userData) => {
   ).then((result) => {
     return new Promise((resolve, reject) => {
       const sql =
-        "SELECT user_idx, user_id, user_nickname, user_created " +
+        "SELECT user_idx, user_id, user_nickname, user_email, user_created " +
         "FROM user " +
         "WHERE user_idx = ?";
 

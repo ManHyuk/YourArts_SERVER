@@ -24,6 +24,7 @@ exports.register = async(req, res, next) => {
       id: req.body.id,
       pw: config.do_cipher(pw),
       nickname: req.body.nickname,
+      email: req.body.email,
 
     };
 
