@@ -50,28 +50,25 @@ module.exports = (router) => {
 
   //like, Heart
   router.route('/like')
-    .post(likeHeartCtrl.like)
-    .put(likeHeartCtrl.likeEdit);
+    .post(authCtrl.auth, likeHeartCtrl.like)
+    .put(authCtrl.auth, likeHeartCtrl.likeEdit);
 
   router.route('/heart')
-    .post(likeHeartCtrl.heart)
-    .put(likeHeartCtrl.heartEdit);
+    .post(authCtrl.auth, likeHeartCtrl.heart)
+    .put(authCtrl.auth, likeHeartCtrl.heartEdit);
 
 
 
   // COLLECTIONS
   router.route('/collections')
-    .get(authCtrl.auth, collectionCtrl.userCollection);
-  router.route('/collections')
-    .post(imageCtrl.uploadSingle, collectionCtrl.collectionPost)
-    .put(collectionCtrl.editCollection);
+    .get(authCtrl.auth, collectionCtrl.userCollection)
+    .post(authCtrl.auth, imageCtrl.uploadSingle, collectionCtrl.collectionPost);
 
-  router.route('/collections/edit')
-    .put(collectionCtrl.editCollection);
 
   router.route('/collections/:collection_idx')
     .get(collectionCtrl.detailCollection)
-    .delete(collectionCtrl.delCollection);
+    .delete(authCtrl.auth, collectionCtrl.delCollection)
+    .put(authCtrl.auth, collectionCtrl.editCollection);
 
 
   //MYPAGE

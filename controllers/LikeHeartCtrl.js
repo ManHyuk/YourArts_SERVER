@@ -15,7 +15,7 @@ exports.like = async(req, res, next) => {
 
   try {
     const likeData = {
-      user_idx : req.body.user_idx,
+      user_idx : req.user_idx,
       exhibition_idx : req.body.exhibition_idx,
       like_count : req.body.like_count
     };
@@ -42,7 +42,7 @@ exports.likeEdit = async(req, res, next) => {
 
   try {
     const likeEditData = {
-      user_idx : req.body.user_idx,
+      user_idx : req.user_idx,
       exhibition_idx : req.body.exhibition_idx,
       like_before_count : req.body.like_before_count,
       like_after_count : req.body.like_after_count
@@ -71,7 +71,7 @@ exports.heart = async(req, res, next) => {
 
   try {
     const heartData = {
-      user_idx : req.body.user_idx,
+      user_idx : req.user_idx,
       exhibition_idx : req.body.exhibition_idx
     };
 
@@ -90,7 +90,7 @@ exports.heartEdit = async(req, res, next) => {
 
   try {
     const heartData = {
-      user_idx : req.body.user_idx,
+      user_idx : req.user_idx,
       exhibition_idx : req.body.exhibition_idx
     };
 
