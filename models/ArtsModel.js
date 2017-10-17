@@ -235,7 +235,7 @@ exports.workDetail = (data) => {
           w.work_idx,
           w.work_name,
           w.work_size,
-          w.work_idx,
+          w.work_idea,
           w.work_style,
           w.work_owner,
           w.work_image

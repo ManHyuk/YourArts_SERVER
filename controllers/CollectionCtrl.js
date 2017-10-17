@@ -72,7 +72,8 @@ exports.editCollection = async(req, res, next) => {
   let result ='';
   try {
     const collectionEditData = {
-      collection_idx : req.body.collection_idx,
+      user_idx: req.user_idx,
+      collection_idx : req.params.collection_idx,
       collection_content : req.body.collection_content
     };
 
@@ -91,9 +92,12 @@ exports.editCollection = async(req, res, next) => {
 exports.delCollection = async(req, res, next) => {
   let result ='';
   try {
-    const collectionIdxData = req.params.collection_idx;
+    const data = {
+      user_idx: req.user_idx,
+      collection_idx: req.params.collection_idx,
+    };
 
-    result = await collectionModel.delCollection(collectionIdxData);
+    result = await collectionModel.delCollection(data);
 
   } catch (error) {
     console.log(error);
