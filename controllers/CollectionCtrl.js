@@ -33,7 +33,7 @@ exports.collectionPost = async(req, res, next) => {
 
   try {
     const collectionData = {
-      user_idx: req.body.user_idx,
+      user_idx: req.user_idx,
       exhibition_idx: req.body.exhibition_idx,
       collection_content : req.body.collection_content,
       collection_image: image

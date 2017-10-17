@@ -124,7 +124,7 @@ exports.exDetail= async(req, res, next) => {
 
   try{
     const data = {
-      exIdx: req.params.idx,
+      exIdx: req.params.art_idx,
       userIdx: req.user_idx,
     };
     console.log(data);
