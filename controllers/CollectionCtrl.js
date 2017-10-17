@@ -1,6 +1,6 @@
 'use strict';
 
-const collectionModel = require('../models/CollectioModel');
+const collectionModel = require('../models/CollectionModel');
 const config = require('../config/config');
 const resMsg = require('../errors.json');
 
