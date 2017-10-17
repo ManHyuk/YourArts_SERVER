@@ -12,10 +12,10 @@ const date = new Date();
  * @returns {Promise}
  */
 
- exports.watch = (watchData) => {
-   return new Promise((resolve, reject) => {
-     const sql =
-       `
+exports.watch = (watchData) => {
+  return new Promise((resolve, reject) => {
+    const sql =
+      `
        SELECT
          e.exhibition_name,
          e.exhibition_picture,
@@ -28,17 +28,16 @@ const date = new Date();
        ORDER BY like.like_count DESC, e.exhibition_name;
        `;
 
-         pool.query(sql, watchData, (err, rows) => {
-           if (err) {
-             reject(err);
-           } else {
-             resolve(rows);
-           }
-         })
+    pool.query(sql, watchData, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    })
 
-   });
- };
-
+  });
+};
 
 
 /******
@@ -47,8 +46,6 @@ const date = new Date();
  * @returns {Promise}
  */
 
-
- //종료된전시는 어덯게 없어짐
 exports.wish = (wishData) => {
   return new Promise((resolve, reject) => {
     const sql =
@@ -67,12 +64,12 @@ exports.wish = (wishData) => {
       ORDER BY  e.exhibition_end_date,
                 e.exhibition_name;
       `;
-        pool.query(sql, wishData, (err, rows) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(rows);
-          }
-        })
+    pool.query(sql, wishData, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    })
   });
 };

@@ -20,7 +20,7 @@ exports.search = (searchData) => {
           exhibition_name,
           exhibition_start_date,
           exhibition_end_date,
-          exhibition_picture          
+          exhibition_picture
         FROM exhibition
         WHERE exhibition_name REGEXP ?;
       `;
@@ -254,4 +254,3 @@ exports.workDetail = (data) => {
     });
   });
 };
-

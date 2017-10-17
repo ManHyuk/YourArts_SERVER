@@ -24,6 +24,10 @@ module.exports = (router) => {
   router.route('/users/fb/login')
     .post(userCtrl.fbLogin);
 
+  router.route('/users')
+    .put(authCtrl.auth, userCtrl.edit)
+    .delete(authCtrl.auth, userCtrl.delUser);
+
 
 
   // ARTS
@@ -36,12 +40,12 @@ module.exports = (router) => {
   router.route('/search/:search')
     .get(artsCtrl.search);
 
-  router.route('/arts/:idx')
+  router.route('/arts/:art_idx')
     .get(authCtrl.auth, artsCtrl.exDetail);
 
 
 
-  router.route('/works/:idx')
+  router.route('/works/:work_idx')
     .get(artsCtrl.workDetail);
 
   //like, Heart
@@ -56,13 +60,11 @@ module.exports = (router) => {
 
 
   // COLLECTIONS
-  router.route('/userCollections/:user_idx')
-    .get(collectionCtrl.userCollection);
+  router.route('/collections')
+    .get(authCtrl.auth, collectionCtrl.userCollection);
   router.route('/collections')
     .post(imageCtrl.uploadSingle, collectionCtrl.collectionPost)
     .put(collectionCtrl.editCollection);
-
-
 
   router.route('/collections/edit')
     .put(collectionCtrl.editCollection);
@@ -72,14 +74,11 @@ module.exports = (router) => {
     .delete(collectionCtrl.delCollection);
 
 
-
-
   //MYPAGE
-
-  router.route('/watch/:user_idx')
-    .get(mypageCtrl.watch);
-  router.route('/wish/:user_idx')
-    .get(mypageCtrl.wish);
+  router.route('/watch')
+    .get(authCtrl.auth, mypageCtrl.watch);
+  router.route('/wish')
+    .get(authCtrl.auth, mypageCtrl.wish);
 
 
   return router;

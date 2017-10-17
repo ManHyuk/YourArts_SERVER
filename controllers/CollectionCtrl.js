@@ -11,7 +11,7 @@ const resMsg = require('../errors.json');
 exports.userCollection = async(req, res, next) => {
   let result = '';
   try {
-    const userIdxData = req.params.user_idx;
+    const userIdxData = req.user_idx;
 
     result = await collectionModel.userCollection(userIdxData);
 

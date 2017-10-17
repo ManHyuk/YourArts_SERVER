@@ -30,11 +30,11 @@ exports.register = (userData) => {
   ).then(() => {
       return new Promise((resolve, reject) => {
         const sql =
-          "INSERT INTO user(user_id, user_pw, user_nickname) " +
-          "VALUES (?, ?, ?) ";
+          "INSERT INTO user(user_id, user_pw, user_nickname, user_email) " +
+          "VALUES (?, ?, ?, ?) ";
 
 
-        pool.query(sql, [userData.id, userData.pw, userData.nickname], (err, rows) => {  // 가입 시도
+        pool.query(sql, [userData.id, userData.pw, userData.nickname, userData.email], (err, rows) => {  // 가입 시도
           if (err) {
             reject(err);
           } else {
@@ -51,7 +51,7 @@ exports.register = (userData) => {
   ).then((result) => {
     return new Promise((resolve, reject) => {
       const sql =
-        "SELECT user_idx, user_id, user_nickname, user_created " +
+        "SELECT user_idx, user_id, user_nickname, user_email, user_created " +
         "FROM user " +
         "WHERE user_idx = ?";
 
@@ -259,25 +259,62 @@ exports.profile = (userData) => {
   });
 };
 
+/*******************
+ *  닉네임수정
+ *  @param editData = {user_idx, content}}
+ ********************/
+exports.edit = (editData) => {
+ return new Promise((resolve, reject) => {
+    const sql = "UPDATE user SET user_nickname=? WHERE user_idx=?";
 
+     pool.query(sql, [editData.nickname, editData.user_idx], (err, rows) => {
+       if (err) {
+         reject(err);
+       } else {
+         if (rows.affectedRows === 1) {
+           resolve(editData.user_idx);
+         } else {
+           const _err = new Error("User Edit error");
+           reject(_err);
+         }
+       }
+     });
+   }
+ ).then((data) => {
+     return new Promise((resolve, reject) => {
+       const sql = "SELECT * FROM user WHERE user_idx=?";
 
+       pool.query(sql, data, (err, rows) => {
+         if (err) {
+           reject(err);
+         } else {
+           resolve(rows);
+         }
+       });
+     });
+   }
+ );
+};
 
+/*******************
+ *  회원탈퇴
+ *  @param data = user_idx
+ ********************/
+exports.delUser = (data) => {
+  return new Promise((resolve, reject) =>{
+    const sql = "DELETE FROM user WHERE user_idx=?";
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    pool.query(sql, data, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        if (rows.affectedRows === 1) {
+          resolve(rows);
+        } else {
+          const _err = new Error("User Delete error");
+          reject(_err);
+        }
+      }
+    })
+  });
+};

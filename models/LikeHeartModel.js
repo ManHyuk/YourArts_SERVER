@@ -318,8 +318,8 @@ exports.heartEdit = (heartData) => {
           }
         }
       });
-    }
-  ).then(() => {
+  }
+).then((result) => {
       return new Promise((resolve, reject) => {
 
         const sql =
