@@ -104,39 +104,63 @@ exports.detailCollection = (collectionIdxData) => {
 //
 /*******************
  *  컬렉션수정
- *  @param collectionData = {collection_idx, content}}
+ *  @param editData = {user_idx, collection_idx, collection_content}}
  ********************/
-exports.editCollection = (collectionEditData) => {
- return new Promise((resolve, reject) => {
-    const sql = "UPDATE collection SET collection_content=? WHERE collection_idx=?";
 
-     pool.query(sql, [collectionEditData.collection_content, collectionEditData.collection_idx], (err, rows) => {
-       if (err) {
-         reject(err);
-       } else {
-         if (rows.affectedRows === 1) {
-           resolve(collectionEditData.collection_idx);
-         } else {
-           const _err = new Error("Collection Edit error");
-           reject(_err);
-         }
-       }
-     });
-   }
- ).then((data) => {
-     return new Promise((resolve, reject) => {
-       const sql = "SELECT * FROM collection WHERE collection_idx=?";
+exports.editCollection = (editData) => {
+  return new Promise((resolve, reject) => {
+    const sql =
+      `
+        SELECT user_idx
+        FROM collection
+        WHERE collection_idx = ? 
+      `;
 
-       pool.query(sql, data, (err, rows) => {
-         if (err) {
-           reject(err);
-         } else {
-           resolve(rows);
-         }
-       });
-     });
-   }
- );
+    pool.query(sql, [editData.collection_idx], (err, rows) => {
+      if(err){
+        reject(err)
+      }else{
+        if (editData.user_idx !== rows[0].user_idx){
+          reject(9402)
+        } else {
+          resolve(null)
+        }
+      }
+    })
+  }).then(() => {
+    return new Promise((resolve, reject) => {
+      const sql =
+        `
+        UPDATE collection 
+        SET collection_content= ? 
+        WHERE collection_idx= ? 
+        `;
+      pool.query(sql, [editData.collection_content, editData.collection_idx], (err, rows) => {
+        if(err){
+          reject(err)
+        } else {
+          resolve(rows)
+        }
+      })
+    })
+  }).then(() => {
+    return new Promise((resolve, reject) => {
+      const sql =
+        `
+        SELECT * 
+        FROM collection 
+        WHERE collection_idx=?
+        `;
+
+      pool.query(sql, [editData.collection_idx], (err,rows) => {
+        if(err){
+          reject(err)
+        } else {
+          resolve(rows)
+        }
+      })
+    });
+  });
 };
 
 
@@ -144,21 +168,40 @@ exports.editCollection = (collectionEditData) => {
  *  컬렉션삭제
  *  @param collectionData = collection_idx
  ********************/
-exports.delCollection = (collectionIdxData) => {
-  return new Promise((resolve, reject) =>{
-    const sql = "DELETE FROM collection WHERE collection_idx=?";
 
-    pool.query(sql, collectionIdxData, (err, rows) => {
-      if (err) {
-        reject(err);
-      } else {
-        if (rows.affectedRows === 1) {
-          resolve(rows);
+exports.delCollection = (delData) => {
+  return new Promise((resolve, reject) => {
+    const sql =
+      `
+        SELECT user_idx
+        FROM collection
+        WHERE collection_idx = ? 
+      `;
+
+    pool.query(sql, [delData.collection_idx], (err, rows) => {
+      if(err){
+        reject(err)
+      }else{
+        if (delData.user_idx !== rows[0].user_idx){
+          reject(9402)
         } else {
-          const _err = new Error("Collection Delete error");
-          reject(_err);
+          resolve(null)
         }
       }
+    })
+  }).then(() => {
+    return new Promise((resolve, reject) => {
+      const sql =
+        `
+        DELETE FROM collection WHERE collection_idx=? 
+        `;
+      pool.query(sql, [delData.collection_idx], (err, rows) => {
+        if(err){
+          reject(err)
+        } else {
+          resolve(rows)
+        }
+      })
     })
   });
 };
