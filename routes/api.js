@@ -66,7 +66,7 @@ module.exports = (router) => {
 
 
   router.route('/collections/:collection_idx')
-    .get(collectionCtrl.detailCollection)
+    .get(authCtrl.auth, collectionCtrl.detailCollection)
     .delete(authCtrl.auth, collectionCtrl.delCollection)
     .put(authCtrl.auth, collectionCtrl.editCollection);
 

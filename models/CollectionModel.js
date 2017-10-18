@@ -72,24 +72,24 @@ exports.userCollection = (userIdxData) => {
   );
 };
 
- /*******************
-  *  컬렉션상세조회
-  *  @param collectionData = collection_idx
-  ********************/
+/*******************
+ *  컬렉션상세조회
+ *  @param collectionData = collection_idx
+ ********************/
 exports.detailCollection = (collectionIdxData) => {
   return new Promise((resolve, reject) => {
-
     const sql =
       `
-      SELECT
-        collection_idx,
-        user_idx,
-        exhibition_idx,
-        collection_content,
-        collection_image
-      FROM collection
-      WHERE collection_idx=?;
-      `;
+        SELECT
+          collection_idx,
+          user_idx,
+          e.exhibition_name,
+          collection_content,
+          collection_image
+        FROM collection AS c
+          LEFT JOIN exhibition AS e ON c.exhibition_idx = e.exhibition_idx
+        WHERE collection_idx = ?
+        `;
 
     pool.query(sql, collectionIdxData, (err, rows) => {
       if (err) {
@@ -98,8 +98,9 @@ exports.detailCollection = (collectionIdxData) => {
         resolve(rows[0]);
       }
     })
-  });
+  })
 };
+
 
 //
 /*******************
@@ -113,7 +114,7 @@ exports.editCollection = (editData) => {
       `
         SELECT user_idx
         FROM collection
-        WHERE collection_idx = ? 
+        WHERE collection_idx = ?
       `;
     pool.query(sql, [editData.collection_idx], (err, rows) => {
       if(err){
@@ -131,9 +132,9 @@ exports.editCollection = (editData) => {
     return new Promise((resolve, reject) => {
       const sql =
         `
-        UPDATE collection 
-        SET collection_content= ? 
-        WHERE collection_idx= ? 
+        UPDATE collection
+        SET collection_content= ?
+        WHERE collection_idx= ?
         `;
       pool.query(sql, [editData.collection_content, editData.collection_idx], (err, rows) => {
         if(err){
@@ -147,8 +148,8 @@ exports.editCollection = (editData) => {
     return new Promise((resolve, reject) => {
       const sql =
         `
-        SELECT * 
-        FROM collection 
+        SELECT *
+        FROM collection
         WHERE collection_idx=?
         `;
 
@@ -174,7 +175,7 @@ exports.delCollection = (delData) => {
       `
         SELECT user_idx
         FROM collection
-        WHERE collection_idx = ? 
+        WHERE collection_idx = ?
       `;
 
     pool.query(sql, [delData.collection_idx], (err, rows) => {
@@ -193,7 +194,7 @@ exports.delCollection = (delData) => {
     return new Promise((resolve, reject) => {
       const sql =
         `
-        DELETE FROM collection WHERE collection_idx=? 
+        DELETE FROM collection WHERE collection_idx=?
         `;
       pool.query(sql, [delData.collection_idx], (err, rows) => {
         if(err){
