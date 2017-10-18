@@ -28,18 +28,30 @@ exports.userCollection = async(req, res, next) => {
 exports.collectionPost = async(req, res, next) => {
   let image;
   let result = '';
-  if(!req.file) image = null;
-  else image = req.file.location;
+  if(!req.file){
+    image = null;
+  } else{
+    image = req.file.location;
+  }
 
   try {
     const collectionData = {
       user_idx: req.user_idx,
       exhibition_idx: req.body.exhibition_idx,
+      collection_name: req.body.collection_name,
       collection_content : req.body.collection_content,
       collection_image: image
     };
 
-    result = await collectionModel.collectionPost(collectionData);
+    if (parseInt(collectionData.exhibition_idx) === 0) {
+      // 등록된 전시가 없는경우
+      result = await collectionModel.collectionPost2(collectionData)
+
+    }else{ // 등록된 전시가 있는 경우
+      result = await collectionModel.collectionPost(collectionData);
+    }
+
+
 
   } catch (error) {
     console.log(error);
