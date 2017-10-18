@@ -72,54 +72,34 @@ exports.userCollection = (userIdxData) => {
   );
 };
 
- /*******************
-  *  컬렉션상세조회
-  *  @param collectionData = collection_idx
-  ********************/
-  exports.detailCollection = (collectionIdxData) => {
-
-    let results = [];
-    return new Promise((resolve, reject) => {
-
-      const sql =
-        `
+/*******************
+ *  컬렉션상세조회
+ *  @param collectionData = collection_idx
+ ********************/
+exports.detailCollection = (collectionIdxData) => {
+  return new Promise((resolve, reject) => {
+    const sql =
+      `
         SELECT
           collection_idx,
           user_idx,
-          exhibition_idx,
+          e.exhibition_name,
           collection_content,
           collection_image
-        FROM collection
-        WHERE collection_idx=?;
+        FROM collection AS c
+          LEFT JOIN exhibition AS e ON c.exhibition_idx = e.exhibition_idx
+        WHERE collection_idx = ?
         `;
 
-      pool.query(sql, collectionIdxData, (err, rows) => {
-        if (err) {
-          reject(err);
-        } else {
-          results.push(rows[0]);
-          resolve(results);
-        }
-      })
-    }).then((results) => {
-      return new Promise((resolve, reject) => {
-
-        const sql =
-          `
-          SELECT exhibition_name FROM exhibition WHERE exhibition_idx=?
-          `;
-        pool.query(sql, results[0].exhibition_idx, (err, rows) => {
-          if(err){
-            reject(err)
-          } else {
-            results.push(rows[0]);
-            // results.name = rows[0].exhibition_name;
-            resolve(results);
-        }
-        });
-      })
-    });
-    };
+    pool.query(sql, collectionIdxData, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows[0]);
+      }
+    })
+  })
+};
 
 
 //
