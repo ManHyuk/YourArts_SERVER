@@ -41,9 +41,9 @@ exports.userCollection = (userIdxData) => {
  ********************/
  exports.collectionPost = (collectionData) => {
   return new Promise((resolve, reject) => {
-     const sql = "INSERT INTO collection set ?";
+     const sql = "INSERT INTO collection (user_idx, exhibition_idx, collection_content, collection_image) VALUES (?, ?, ?, ?)";
 
-      pool.query(sql, collectionData, (err, rows) => {
+      pool.query(sql, [collectionData.user_idx, collectionData.exhibition_idx, collectionData.collection_content, collectionData.collection_image], (err, rows) => {
         if (err) {
           reject(err);
         } else {
@@ -58,13 +58,25 @@ exports.userCollection = (userIdxData) => {
     }
   ).then((result) => {
       return new Promise((resolve, reject) => {
-        const sql = "SELECT * FROM collection WHERE collection_idx = ?";
+        const sql =
+          `
+        SELECT
+          collection_idx,
+          user_idx,
+          c.exhibition_idx,
+          e.exhibition_name,
+          collection_content,
+          collection_image
+        FROM collection AS c
+          LEFT JOIN exhibition AS e ON c.exhibition_idx = e.exhibition_idx
+        WHERE collection_idx = ?
+        `;
 
         pool.query(sql, result.insertId, (err, rows) => {
           if (err) {
             reject(err);
           } else {
-            resolve(rows);
+            resolve(rows[0]);
           }
         });
       });
@@ -72,9 +84,59 @@ exports.userCollection = (userIdxData) => {
   );
 };
 
+/*******
+ * 등록된 전시가 없는 경우 컬렉션 작성
+ * @param data
+ * @returns {Promise}
+ */
+exports.collectionPost2 = (data) => {
+  return new Promise((resolve, reject) => {
+    const sql =
+      `
+      INSERT INTO collection (user_idx, exhibition_idx, collection_name, collection_content, collection_image)
+      VALUES (?, ?, ?, ?, ?); 
+      `;
+    pool.query(sql, [data.user_idx, data.exhibition_idx, data.collection_name, data.collection_content, data.collection_image], (err, rows) => {
+      if (err){
+        reject(err)
+      } else {
+        if (rows.affectedRows === 1) {
+          resolve(rows);
+        } else {
+          const _err = new Error("Collection Write error");
+          reject(_err);
+        }
+      }
+    });
+  }).then((result) => {
+    return new Promise((resolve, reject) => {
+      const sql =
+        `
+        SELECT
+          collection_idx,
+          user_idx,
+          exhibition_idx,
+          collection_name AS exhibition_name,
+          collection_content,
+          collection_image
+        FROM collection AS c
+        WHERE c.collection_idx = ?
+        `;
+      pool.query(sql, result.insertId, (err, rows) => {
+        if(err){
+          reject(err)
+        } else {
+          resolve(rows[0]);
+        }
+      });
+    })
+  })
+};
+
+
 /*******************
  *  컬렉션상세조회
- *  @param collectionData = collection_idx
+ *  @param collectionIdxData = collection_idx
  ********************/
 exports.detailCollection = (collectionIdxData) => {
   return new Promise((resolve, reject) => {
@@ -167,7 +229,7 @@ exports.editCollection = (editData) => {
 
 /*******************
  *  컬렉션삭제
- *  @param collectionData = collection_idx
+ *  @param delData = collection_idx
  ********************/
 exports.delCollection = (delData) => {
   return new Promise((resolve, reject) => {
