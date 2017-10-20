@@ -4,7 +4,12 @@ const request = require('request');
 
 const userModel = require('../models/UserModel');
 const config = require('../config/config');
+
 const resMsg = require('../errors.json');
+
+
+const nodemailer = require('nodemailer');
+
 
 
 /*******************
@@ -250,5 +255,153 @@ exports.delUser = async(req, res, next) => {
     console.log(error);
     return next(error)
   }
+  return res.r(result);
+};
+
+
+/**************
+ * ID 찾기
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<*>}
+ */
+exports.findID = async(req,res,next) => {
+  let result;
+  try{
+    const data = {
+      email: req.body.email,
+      name: req.body.name,
+    };
+
+    result = await userModel.findID(data);
+
+  } catch (error){
+    console.log(error);
+    return next(error)
+  }
+
+  return res.r(result);
+};
+
+
+
+
+
+
+/************
+ * PW 찾기 -> (ID && EAMIL) 일치하는 값이 있는경우
+ * 임시비번으로 변경뒤 이메일 전송
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<void>}
+ */
+exports.findPW = async (req, res, next) => {
+  let result = {};
+  let userEmail;
+
+  // 난수 생성 ( 인증번호(임시비번 생성 )
+  const generateRandom = (min, max) => {
+    const ranNum = Math.floor(Math.random() * (max - min + 1)) + min;
+    return ranNum;
+  };
+
+  const secretNum = generateRandom(10000,99999);
+
+  try{
+    const data = {
+      id: req.body.id,
+      email: req.body.email,
+      secretNum: config.do_cipher(secretNum+''), // 스트링으로 변환뒤 암호화
+
+    };
+    userEmail = await userModel.findPW(data);
+
+    let transporter = nodemailer.createTransport(config.adminMail);
+
+    let mailOptions = {
+      from: config.adminMail.auth.user,
+      to: userEmail,
+      subject: '당신의 전시 비밀번호 찾기',
+      text: '인증번호 : '+ secretNum
+    };
+
+    transporter.sendMail(mailOptions, (err, info) => {
+      if (err) {
+        console.log(err);
+      }
+      else {
+        console.log('Email sent! : ' + info.response);
+      }
+      transporter.close();
+    });
+
+  }catch (error){
+    console.log(error);
+    return next(error);
+  }
+  result.user_email = userEmail;
+
+  return res.r(result);
+};
+
+/**********8
+ * 인증번호 확인
+ * 인증번호 불일치시 파라미터 불일치 메세지 전송
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<*>}
+ */
+exports.confirmPW = async(req, res, next) => {
+  let result;
+
+  try{
+    const data = {
+      secretNum: config.do_cipher(req.body.code),
+    };
+    result = await userModel.confirmPW(data);
+
+  }catch (error){
+    console.log(error);
+    return next(error);
+  }
+
+  return res.r(result);
+};
+
+
+/*********
+ * 비밀번호 변경
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<*>}
+ */
+
+exports.editPW = async(req, res, next) => {
+
+  let result;
+  let pw;
+  if (req.body.pw1 !== req.body.pw2) {
+    return res.status(400).json(resMsg[1404])
+  } else {
+    pw = req.body.pw1
+  }
+
+  try{
+    const data = {
+      pw: config.do_cipher(pw),
+      id: req.body.id,
+      email: req.body.email
+    };
+    result = await userModel.editPW(data);
+
+  }catch (error){
+    console.log(error);
+    return next(error);
+  }
+
   return res.r(result);
 };

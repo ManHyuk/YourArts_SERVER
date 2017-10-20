@@ -318,3 +318,136 @@ exports.delUser = (data) => {
     })
   });
 };
+
+
+/******************
+ * ID 찾기
+ * @param data
+ * @returns {Promise}
+ */
+exports.findID = (data) => {
+  return new Promise((resolve, reject) => {
+    const sql =
+      `
+      SELECT user_id
+      FROM user
+      WHERE user_nickname = ? AND user_email = ?
+      `;
+    pool.query(sql, [data.name, data.email], (err, rows) => {
+      if (err){
+        reject(err)
+      } else {
+        resolve(rows[0])
+      }
+    });
+  });
+};
+
+
+/********
+ * PW 찾기 -> email로 임시비밀번호 보내고 임시비밀번호로 변경
+ * @param data
+ * @returns {Promise.<>}
+ */
+exports.findPW = (data) => {
+  return new Promise((resolve, reject) => {
+    // id와 email을 조건으로 유저 이메일을 SELECT
+    const sql =
+      `
+      SELECT user_email
+      FROM user
+      WHERE user_id = ? AND user_email = ?
+      `;
+    pool.query(sql, [data.id, data.email], (err, rows) => {
+      if (err){
+        reject(err);
+      } else {
+        if (rows.length === 0) { // 일치하는 값이 없는 경우
+          reject(1402);
+        } else {
+          resolve(rows[0].user_email);
+        }
+      }
+    });
+  }).then((result) => {
+    return new Promise((resolve, reject) => {
+      const sql =
+        `
+        UPDATE user
+        SET user_pw = ?
+        WHERE user_email = ?
+        `;
+      pool.query(sql, [data.secretNum, result], (err, rows) => {
+        if(err){
+          reject(err)
+        } else {
+          resolve(result)
+        }
+      });
+    });
+  });
+};
+
+exports.confirmPW = (data) => {
+  return new Promise((resolve, reject) => {
+    const sql =
+      `
+        SELECT user_id, user_nickname, user_email
+        FROM user
+        WHERE user_pw = ?
+      `;
+
+    pool.query(sql, [data.secretNum], (err, rows) => {
+      if(err){
+        reject(err);
+      } else {
+        if(rows.length === 0){ // 인증번호가 다른경우
+          reject(9401);
+        } else {
+          resolve(rows[0]);
+        }
+      }
+    });
+  });
+};
+
+
+
+/***********
+ * PW 변경
+ * @param data
+ * @returns {Promise.<TResult>}
+ */
+exports.editPW = (data) => {
+  return new Promise((resolve, reject) => {
+    const sql =
+      `
+        UPDATE user
+        SET user_pw = ?
+        WHERE user_email = ? AND user_id = ?
+      `;
+    pool.query(sql, [data.pw, data.email, data.id], (err, rows) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(rows)
+      }
+    });
+  }).then(() => {
+    return new Promise((resolve, reject) => {
+      const sql =
+        `
+          SELECT user_id, user_nickname, user_email
+          FROM user
+          WHERE user_email = ? AND user_id = ? 
+        `;
+      pool.query(sql, [data.email, data.id], (err, rows) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(rows[0]);
+        }
+      });
+    });
+  });
+};
