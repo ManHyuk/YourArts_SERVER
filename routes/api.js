@@ -27,6 +27,14 @@ module.exports = (router) => {
   router.route('/users')
     .put(authCtrl.auth, userCtrl.edit)
     .delete(authCtrl.auth, userCtrl.delUser);
+  router.route('/users/find/id')
+    .post(userCtrl.findID);
+  router.route('/users/find/pw')
+    .post(userCtrl.findPW);
+  router.route('/users/confirm/pw')
+    .post(userCtrl.confirmPW);
+  router.route('/users/edit/pw')
+    .post(userCtrl.editPW);
 
 
 
