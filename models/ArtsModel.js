@@ -139,6 +139,8 @@ exports.exDetail = (data) => {
             resultData.exhibition_name= rows[0].exhibition_name;
             resultData.exhibition_stard_date= rows[0].exhibition_stard_date;
             resultData.exhibition_end_date= rows[0].exhibition_end_date;
+            resultData.exhibition_start_time = rows[0].exhibition_start_time;
+            resultData.exhibition_end_time = rows[0].exhibition_end_time;
             resultData.exhibition_location=rows[0].exhibition_location;
             resultData.exhibition_description= rows[0].exhibition_description;
             resultData.exhibition_picture= rows[0].exhibition_picture;
