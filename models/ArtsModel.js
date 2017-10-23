@@ -53,6 +53,8 @@ exports.list = (data) => {
           date_format(convert_tz(exhibition_end_date, "+00:00", "+00:00"), "%Y.%m.%d") as exhibition_end_date,
           UNIX_TIMESTAMP() - UNIX_TIMESTAMP(exhibition_start_date) as start_date,
           UNIX_TIMESTAMP() - UNIX_TIMESTAMP(exhibition_end_date) as end_date,
+          exhibition_start_time,
+          exhibition_end_time,
           exhibition_picture,
           ROUND((exhibition_sum / exhibition_count), 1) as avg
         FROM exhibition
