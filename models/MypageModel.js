@@ -52,6 +52,7 @@ exports.wish = (wishData) => {
     const sql =
       `
       SELECT
+          e.exhibition_idx,
           e.exhibition_name,
           e.exhibition_picture,
           date_format(convert_tz(exhibition_start_date, "+00:00", "+00:00"), "%Y.%m.%d") as exhibition_stard_date,
