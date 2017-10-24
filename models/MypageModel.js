@@ -22,6 +22,8 @@ exports.watch = (watchData) => {
          e.exhibition_picture,
          date_format(convert_tz(exhibition_start_date, "+00:00", "+00:00"), "%Y.%m.%d") as exhibition_stard_date,
          date_format(convert_tz(exhibition_end_date, "+00:00", "+00:00"), "%Y.%m.%d") as exhibition_end_date,
+         UNIX_TIMESTAMP() - UNIX_TIMESTAMP(exhibition_start_date) as start_date,
+          UNIX_TIMESTAMP() - UNIX_TIMESTAMP(exhibition_end_date) as end_date,
          like.like_count
        FROM YOURARTS.like
        NATURAL JOIN YOURARTS.exhibition AS e
