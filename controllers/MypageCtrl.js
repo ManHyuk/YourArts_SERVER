@@ -9,13 +9,29 @@ const resMsg = require('../errors.json');
  * @param req
  */
 exports.watch = async(req, res, next) => {
-  let result = '';
+  let result = [];
+  let data = '';
   try {
     const watchData = req.user_idx;
-    result = await mypageModel.watch(watchData);
+    data = await mypageModel.watch(watchData);
   } catch(error) {
     return next(error);
   }
+
+  //TODO 모듈화 하기
+  for(let i =0;i<data.length;i++){
+    if ((data[i].start_date < 0) && (data[i].end_date < 0)){
+      data[i].flag = 'todo';
+      result.push(data[i]);
+    } else if ((data[i].start_date > 0) && (data[i].end_date < 0 )) {
+      data[i].flag = 'doing';
+      result.push(data[i]);
+    } else if ((data[i].start_date) > 0 && (data[i].end_date > 0)) {
+      data[i].flag = 'done';
+      result.push(data[i]);
+    }
+  }
+
   return res.r(result);
 
 };
@@ -35,10 +51,15 @@ exports.watch = async(req, res, next) => {
      return next(error);
    }
 
-   for(let i = 0 ; i<data.length; i++) {
-     //종료 - => 진행중 or 예정
-     if (data[i].end_date < 0) {
-       data[i].flag = 'do';
+   for(let i =0;i<data.length;i++){
+     if ((data[i].start_date < 0) && (data[i].end_date < 0)){
+       data[i].flag = 'todo';
+       result.push(data[i]);
+     } else if ((data[i].start_date > 0) && (data[i].end_date < 0 )) {
+       data[i].flag = 'doing';
+       result.push(data[i]);
+     } else if ((data[i].start_date) > 0 && (data[i].end_date > 0)) {
+       data[i].flag = 'done';
        result.push(data[i]);
      }
    }
