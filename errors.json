@@ -23,7 +23,7 @@
     "status": 400,
     "code": 0,
     "message": "아이디가 존재하지 않습니다.",
-    "description": "Not SignIn VocaVocaNi"
+    "description": "Not Exist ID"
   },
   "1403": {
     "status": 403,
