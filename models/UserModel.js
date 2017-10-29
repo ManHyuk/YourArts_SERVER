@@ -337,7 +337,11 @@ exports.findID = (data) => {
       if (err){
         reject(err)
       } else {
-        resolve(rows[0])
+          if(rows.length ===0){
+            reject(1402)
+          } else{
+            resolve(rows)
+          }
       }
     });
   });
