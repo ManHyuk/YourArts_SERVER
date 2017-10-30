@@ -20,7 +20,9 @@ exports.search = (searchData) => {
           exhibition_name,
           exhibition_start_date,
           exhibition_end_date,
-          exhibition_picture
+          exhibition_picture,
+          UNIX_TIMESTAMP() - UNIX_TIMESTAMP(exhibition_start_date) as start_date,
+          UNIX_TIMESTAMP() - UNIX_TIMESTAMP(exhibition_end_date) as end_date
         FROM exhibition
         WHERE exhibition_name REGEXP ?;
       `;
