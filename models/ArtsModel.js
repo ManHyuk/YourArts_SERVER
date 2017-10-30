@@ -18,8 +18,8 @@ exports.search = (searchData) => {
         SELECT
           exhibition_idx,
           exhibition_name,
-          exhibition_start_date,
-          exhibition_end_date,
+          date_format(convert_tz(exhibition_start_date, "+00:00", "+00:00"), "%Y.%m.%d") as exhibition_stard_date,
+          date_format(convert_tz(exhibition_end_date, "+00:00", "+00:00"), "%Y.%m.%d") as exhibition_end_date,
           exhibition_picture,
           UNIX_TIMESTAMP() - UNIX_TIMESTAMP(exhibition_start_date) as start_date,
           UNIX_TIMESTAMP() - UNIX_TIMESTAMP(exhibition_end_date) as end_date
