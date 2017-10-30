@@ -11,20 +11,35 @@ const artsModel = require('../models/ArtsModel');
  * @returns {Promise.<*>}
  */
 exports.search = async(req, res, next) => {
-  let result = '';
+  let result = [];
+  let data = '';
 
   try {
 
 
     const searchData = req.params.search;
 
-    result = await artsModel.search(searchData);
+    data = await artsModel.search(searchData);
 
   } catch(error) {
     return next(error);
   }
 
-  return res.json(result);
+  //TODO 모듈화 하기
+  for(let i =0;i<data.length;i++){
+    if ((data[i].start_date < 0) && (data[i].end_date < 0)){
+      data[i].flag = 'todo';
+      result.push(data[i]);
+    } else if ((data[i].start_date > 0) && (data[i].end_date < 0 )) {
+      data[i].flag = 'doing';
+      result.push(data[i]);
+    } else if ((data[i].start_date) > 0 && (data[i].end_date > 0)) {
+      data[i].flag = 'done';
+      result.push(data[i]);
+    }
+  }
+
+  return res.r(result);
 };
 
 /*****

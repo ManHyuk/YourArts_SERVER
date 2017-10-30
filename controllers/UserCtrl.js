@@ -274,7 +274,6 @@ exports.findID = async(req,res,next) => {
       name: req.body.name,
     };
 
-    console.log(data);
     result = await userModel.findID(data);
 
   } catch (error){
