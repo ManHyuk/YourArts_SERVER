@@ -140,9 +140,34 @@ exports.collectionPost2 = (data) => {
  ********************/
 exports.detailCollection = (collectionIdxData) => {
   return new Promise((resolve, reject) => {
+    let flag = false;
     const sql =
       `
         SELECT
+          collection_name
+        FROM collection 
+        WHERE collection_idx = ?
+        `;
+    pool.query(sql, collectionIdxData, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+          if(rows[0].collection_name !== null){ // 값이 있다면 등록된 전시가 없는 컬렉션
+            flag = false;
+            resolve(flag);
+          } else { // 값이 없다면 등록된 전시가 있는 컬렉션
+            flag= true;
+            resolve(flag);
+          }
+
+      }
+    })
+  }).then((flag) => {
+    if (flag){ // 등록된 전시가 있는 컬렉션
+      return new Promise((resolve, reject) => {
+        const sql =
+          `
+          SELECT
           collection_idx,
           user_idx,
           e.exhibition_name,
@@ -151,17 +176,65 @@ exports.detailCollection = (collectionIdxData) => {
         FROM collection AS c
           LEFT JOIN exhibition AS e ON c.exhibition_idx = e.exhibition_idx
         WHERE collection_idx = ?
-        `;
-
-    pool.query(sql, collectionIdxData, (err, rows) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(rows[0]);
-      }
-    })
-  })
+          `;
+        pool.query(sql, collectionIdxData, (err, rows) => {
+          if(err){
+            reject(err)
+          } else {
+            resolve(rows[0])
+          }
+        });
+      });
+    } else { // 등록된 전시가 없는 컬렉
+      return new Promise((resolve, reject) => {
+        const sql =
+          `
+          SELECT
+            collection_idx,
+            user_idx,
+            collection_name AS exhibition_name,
+            collection_content,
+            collection_image
+        FROM collection AS c
+          LEFT JOIN exhibition AS e ON c.exhibition_idx = e.exhibition_idx
+        WHERE collection_idx = ?
+          `;
+        pool.query(sql, collectionIdxData, (err, rows) => {
+          if(err){
+            reject(err)
+          }else {
+            resolve(rows[0])
+          }
+        });
+      });
+    }
+  });
 };
+// exports.detailCollection = (collectionIdxData) => {
+//   return new Promise((resolve, reject) => {
+//     const sql =
+//       `
+//         SELECT
+//           collection_idx,
+//           user_idx,
+//           e.exhibition_name,
+//           collection_name,
+//           collection_content,
+//           collection_image
+//         FROM collection AS c
+//           LEFT JOIN exhibition AS e ON c.exhibition_idx = e.exhibition_idx
+//         WHERE collection_idx = ?
+//         `;
+//
+//     pool.query(sql, collectionIdxData, (err, rows) => {
+//       if (err) {
+//         reject(err);
+//       } else {
+//         resolve(rows[0]);
+//       }
+//     })
+//   })
+// };
 
 
 //
