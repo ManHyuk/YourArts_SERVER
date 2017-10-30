@@ -69,7 +69,7 @@ exports.detailCollection = async(req, res, next) => {
   try {
     const collectionIdxData = req.params.collection_idx;
 
-    result = await collectionModel.detailCollection(collectionIdxData);
+    result = await collectionModel.detailCollection2(collectionIdxData);
   } catch (error) {
     console.log(error);
     return next(error);
