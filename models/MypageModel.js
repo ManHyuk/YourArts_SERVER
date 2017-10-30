@@ -64,7 +64,7 @@ exports.wish = (wishData) => {
           heart.heart_used
       FROM YOURARTS.heart
       NATURAL JOIN YOURARTS.exhibition AS e
-      WHERE heart.user_idx=?
+      WHERE heart.user_idx=? AND heart.heart_used = 1
       ORDER BY  e.exhibition_end_date,
                 e.exhibition_name;
       `;
